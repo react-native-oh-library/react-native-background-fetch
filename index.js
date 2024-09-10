@@ -3,10 +3,12 @@
 import {
   NativeModules,
   NativeEventEmitter,
-  AppRegistry
+  AppRegistry,
+  TurboModuleRegistry
 } from "react-native";
 
-const RNBackgroundFetch = NativeModules.RNBackgroundFetch;
+const RNBackgroundFetch = TurboModuleRegistry ? TurboModuleRegistry.get('RNBackgroundFetch') : NativeModules.RNBackgroundFetch;
+
 const EventEmitter = new NativeEventEmitter(RNBackgroundFetch);
 
 const EVENT_FETCH = "fetch";
@@ -48,6 +50,7 @@ export default class BackgroundFetch {
     EventEmitter.removeAllListeners(EVENT_FETCH);
 
     EventEmitter.addListener(EVENT_FETCH, (event) => {
+      console.log('=== event', event);
       if (!event.timeout) {
         onEvent(event.taskId);
       } else {
@@ -70,13 +73,6 @@ export default class BackgroundFetch {
       let failure = (error) => { reject(error) }
       RNBackgroundFetch.scheduleTask(config, success, failure);
     });
-  }
-
-  /**
-  * Register HeadlessTask
-  */
-  static registerHeadlessTask(task) {
-    AppRegistry.registerHeadlessTask("BackgroundFetch", () => task);
   }
 
   static start() {
