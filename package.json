@@ -1,22 +1,31 @@
 {
-  "name": "react-native-background-fetch",
-  "version": "4.2.5",
+  "name": "@react-native-oh-tpl/react-native-background-fetch",
+  "version": "4.2.5-0.0.1",
   "description": "iOS & Android BackgroundFetch API implementation for React Native",
   "scripts": {
     "build": "yarn run build:expo",
     "test": "echo \"Error: no test specified\" && exit 1",
     "build:expo": "rimraf expo/plugin/build && tsc --build ./expo/plugin"
   },
+  "harmony": {
+    "alias": "react-native-background-fetch",
+    "codegenConfig": {
+      "specPaths": [
+        "./src"
+      ]
+    }
+  },
   "repository": {
     "type": "git",
-    "url": "git+ssh://git@github.com/transistorsoft/react-native-background-fetch.git"
+    "url": "git://github.com/react-native-oh-library/react-native-background-fetch.git"
   },
   "keywords": [
     "react-native",
     "react-component",
     "ios",
     "background",
-    "fetch"
+    "fetch",
+    "harmony"
   ],
   "author": "Chris Scott, Transistor Software <chris@transistorsoft.com>",
   "license": "MIT",
@@ -24,6 +33,9 @@
     "url": "https://github.com/transistorsoft/react-native-background-fetch/issues"
   },
   "homepage": "https://transistorsoft.github.io/react-native-background-fetch",
+  "dependencies": {
+    "react-native-background-fetch": "4.2.5"
+  },
   "devDependencies": {
     "rimraf": "^3.0.2",
     "@expo/config-plugins": "^4.1.0",

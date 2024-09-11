@@ -1,0 +1,11 @@
+{
+  "name": "@react-native-oh-tpl/react-native-background-fetch",
+  "version": "4.2.5-0.0.1",
+  "description": "iOS & Android BackgroundFetch API implementation for React Native",
+  "main": "index.ets",
+  "author": "",
+  "license": "Apache-2.0",
+  "dependencies": {
+    "@rnoh/react-native-openharmony": "file:../react_native_openharmony",
+  }
+}
