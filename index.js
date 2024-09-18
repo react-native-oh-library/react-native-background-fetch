@@ -50,7 +50,6 @@ export default class BackgroundFetch {
     EventEmitter.removeAllListeners(EVENT_FETCH);
 
     EventEmitter.addListener(EVENT_FETCH, (event) => {
-      console.log('=== event', event);
       if (!event.timeout) {
         onEvent(event.taskId);
       } else {
