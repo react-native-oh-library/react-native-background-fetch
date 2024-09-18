@@ -11,6 +11,8 @@ const STATUS_RESTRICTED = 0;
 const STATUS_DENIED = 1;
 const STATUS_AVAILABLE = 2;
 
+const MAX_TIME = 60000;
+
 const EVENT_FETCH = "fetch";
 const TAG = "TSBackgroundFetch";
 
@@ -42,6 +44,8 @@ export class RNBackgroundFetch extends TurboModule implements TM.RNBackgroundFet
     events: ["fetch"]
   };
   private config = new Builder()
+  private timer = null
+  private isSubscribe = false
 
   constructor(ctx: TurboModuleContext) {
     super(ctx);
@@ -111,6 +115,7 @@ export class RNBackgroundFetch extends TurboModule implements TM.RNBackgroundFet
       Logger.info(TAG, "[" + TAG + " start] Task " + RNBackgroundFetch.FETCH_TASK_ID + " already registered");
       return
     }
+
     this.registerTask(this.config)
     this.mConfig.set(this.config.taskId, this.config)
     this.status(success)
@@ -154,8 +159,14 @@ export class RNBackgroundFetch extends TurboModule implements TM.RNBackgroundFet
     if (!taskId) {
       taskId = RNBackgroundFetch.FETCH_TASK_ID
     }
+
+    if (!this.mConfig.has(taskId)) return
+
+    clearTimeout(this.timer)
+    this.timer = null
+
     const index = this.taskS.indexOf(taskId)
-    let current
+    let current: Builder
     if (index > -1) {
       current = this.mConfig.get(taskId)
     }
@@ -202,6 +213,7 @@ export class RNBackgroundFetch extends TurboModule implements TM.RNBackgroundFet
   private schedule(config: Builder) {
     const bundleName = this.context.abilityInfo.bundleName
     const workInfo = this.setWorkInfo(bundleName, config)
+    Logger.info(`schedule workInfo ${JSON.stringify(workInfo)}`);
     try {
       if (!this.taskS.includes(config.taskId)) {
         this.taskS.push(config.taskId)
@@ -251,6 +263,9 @@ export class RNBackgroundFetch extends TurboModule implements TM.RNBackgroundFet
             Logger.info(`commonEventManager subscribe success. data is ${commonEventData.data}`);
             const parameters = JSON.parse(JSON.parse(commonEventData.data).parameters)
             this.mFetchCallback.onFetch(parameters.taskId)
+            this.timer = setTimeout(() => {
+              this.mFetchCallback.onTimeout(parameters.taskId)
+            }, MAX_TIME)
           }
         })
     }
@@ -318,6 +333,9 @@ export class RNBackgroundFetch extends TurboModule implements TM.RNBackgroundFet
       }
     }
 
+    if (!workInfo.isRepeat) {
+      workInfo.repeatCount = 1
+    }
     if ('requiresCharging' in config && (typeof config.requiresCharging === 'boolean')) {
       workInfo.isCharging = config.requiresCharging
     }
@@ -325,7 +343,7 @@ export class RNBackgroundFetch extends TurboModule implements TM.RNBackgroundFet
       workInfo.isRepeat = config.periodic
     }
     if (config.isFetchTask) {
-      workInfo.isRepeat = config.periodic
+      workInfo.isRepeat = config.isFetchTask
     }
     if ('requiresDeviceIdle' in config && (typeof config.requiresDeviceIdle === 'boolean')) {
       workInfo.isDeepIdle = config.requiresDeviceIdle
