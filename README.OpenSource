@@ -1,0 +1,11 @@
+[
+    {
+        "Name": "react-native-background-fetch",
+        "License": "MIT License",
+        "License File": "https://github.com/transistorsoft/react-native-background-fetch/blob/master/LICENSE",
+        "Version Number": "4.2.5",
+        "Owner" : "xiafeng@huawei.com",
+        "Upstream URL": "https://github.com/transistorsoft/react-native-background-fetch",
+        "Description": "iOS & Android BackgroundFetch API implementation for React Native"
+    }
+]
